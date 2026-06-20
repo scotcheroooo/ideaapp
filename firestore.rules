@@ -1,0 +1,24 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // accessCodes holds the hashed passwords checked by the gate.
+    // The app only ever reads this list, it never writes to it.
+    // You add and remove codes directly from the Firebase console,
+    // which is an admin context and is not affected by these rules.
+    match /accessCodes/{codeId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // nodes holds every folder and file in the vault.
+    // There is no Firebase Auth in this project, so these rules
+    // cannot tell which visitor is asking. The password gate is a
+    // privacy layer enforced by the app's interface, not a
+    // cryptographically enforced backend rule. Treat the project as
+    // a small private tool for people you trust with the link.
+    match /nodes/{nodeId} {
+      allow read, write: if true;
+    }
+  }
+}
